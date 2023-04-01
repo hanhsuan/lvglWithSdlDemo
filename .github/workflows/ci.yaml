@@ -22,7 +22,7 @@ jobs:
     - name: Create build directory and run CMake
       working-directory: ${{github.workspace}}
       run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
-    - name: Build Project (non windows)
+    - name: Build Project
       working-directory: ${{github.workspace}}
       run: cmake --build build --target all --config Release
   macos-compile:
@@ -38,7 +38,7 @@ jobs:
     - name: Create build directory and run CMake
       working-directory: ${{github.workspace}}
       run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
-    - name: Build Project (non windows)
+    - name: Build Project
       working-directory: ${{github.workspace}}
       run: cmake --build build --target all --config Release
   windows-compile:
@@ -48,9 +48,8 @@ jobs:
       with:
           fetch-depth: 0
     - name: Create build directory and run CMake
-    - name: Create build directory and run CMake
       working-directory: ${{github.workspace}}
       run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
-    - name: Build Project (non windows)
+    - name: Build Project
       working-directory: ${{github.workspace}}
       run: cmake --build build --target ALL_BUILD --config Release
