@@ -1,19 +1,14 @@
 #include <stdio.h>
+#ifdef WIN32
+#include <windows.h>
+#define SLEEP(s) Sleep(s)
+#else
 #include <unistd.h>
+#define SLEEP(s) sleep(s)
+#endif
 #include <time.h>
-#include <sys/time.h>
 #include "lvgl.h"
 #include "sdl/sdl.h"
-
-static unsigned long get_millis(void) {
-    unsigned long   now_ms;
-    struct timespec ts;
-
-    clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
-    now_ms = ts.tv_sec * 1000UL + ts.tv_nsec / 1000000UL;
-
-    return now_ms;
-}
 
 static void create_ui(void) {
     lv_obj_t *btn = lv_btn_create(lv_scr_act());
@@ -66,13 +61,10 @@ int main(void) {
     printf("Begin main loop\n");
     for (;;) {
         // Run LVGL engine
-        if (last_invoked > 0) {
-            lv_tick_inc(get_millis() - last_invoked);
-        }
-        last_invoked = get_millis();
+        lv_tick_inc(1);
         lv_timer_handler();
 
-        usleep(1000);
+        SLEEP(0.001);
     }
 
     return 0;

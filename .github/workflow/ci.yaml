@@ -1,0 +1,52 @@
+name: cmake
+
+on: push
+
+jobs:
+  linux-compile:
+    runs-on: ubnutu-latest
+    - name: Install dependencies
+        run: |
+          sudo apt update -qq
+          sudo apt install -qq -y build-essential git make autoconf automake libtool \
+               pkg-config cmake ninja-build gnome-desktop-testing libasound2-dev libpulse-dev \
+               libaudio-dev libjack-dev libsndio-dev libsamplerate0-dev libx11-dev libxext-dev \
+               libxrandr-dev libxcursor-dev libxfixes-dev libxi-dev libxss-dev libwayland-dev \
+               libxkbcommon-dev libdrm-dev libgbm-dev libgl1-mesa-dev libgles2-mesa-dev \
+               libegl1-mesa-dev libdbus-1-dev libibus-1.0-dev libudev-dev fcitx-libs-dev \
+               libpipewire-0.3-dev libdecor-0-dev
+    - uses: actions/checkout@v3
+      with:
+          fetch-depth: 0
+    - name: Create build directory and run CMake
+      working-directory: ${{github.workspace}}
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+    - name: Build Project (non windows)
+      working-directory: ${{github.workspace}}
+      run: cmake --build build --target all --config Release
+  macos-compile:
+    runs-on: macos-latest
+    - name: Install dependencies
+        run: |
+          brew install \
+              pkg-config
+    - uses: actions/checkout@v3
+      with:
+          fetch-depth: 0
+    - name: Create build directory and run CMake
+      working-directory: ${{github.workspace}}
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+    - name: Build Project (non windows)
+      working-directory: ${{github.workspace}}
+      run: cmake --build build --target all --config Release
+  windows-compile:
+    runs-on: windows-latest
+    - uses: actions/checkout@v3
+      with:
+          fetch-depth: 0
+    - name: Create build directory and run CMake
+      working-directory: ${{github.workspace}}
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+    - name: Build Project (non windows)
+      working-directory: ${{github.workspace}}
+      run: cmake --build build --target ALL_BUILD --config Release
