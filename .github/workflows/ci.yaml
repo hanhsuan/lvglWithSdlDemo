@@ -5,6 +5,10 @@ on: push
 jobs:
   linux-compile:
     runs-on: ubnutu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+          fetch-depth: 0
     - name: Install dependencies
         run: |
           sudo apt update -qq
@@ -15,9 +19,6 @@ jobs:
                libxkbcommon-dev libdrm-dev libgbm-dev libgl1-mesa-dev libgles2-mesa-dev \
                libegl1-mesa-dev libdbus-1-dev libibus-1.0-dev libudev-dev fcitx-libs-dev \
                libpipewire-0.3-dev libdecor-0-dev
-    - uses: actions/checkout@v3
-      with:
-          fetch-depth: 0
     - name: Create build directory and run CMake
       working-directory: ${{github.workspace}}
       run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
@@ -26,13 +27,14 @@ jobs:
       run: cmake --build build --target all --config Release
   macos-compile:
     runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+          fetch-depth: 0
     - name: Install dependencies
         run: |
           brew install \
               pkg-config
-    - uses: actions/checkout@v3
-      with:
-          fetch-depth: 0
     - name: Create build directory and run CMake
       working-directory: ${{github.workspace}}
       run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
@@ -41,9 +43,11 @@ jobs:
       run: cmake --build build --target all --config Release
   windows-compile:
     runs-on: windows-latest
+    steps:
     - uses: actions/checkout@v3
       with:
           fetch-depth: 0
+    - name: Create build directory and run CMake
     - name: Create build directory and run CMake
       working-directory: ${{github.workspace}}
       run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
