@@ -1,14 +1,22 @@
 #include <stdio.h>
+#include <signal.h>
+#include <time.h>
 #ifdef WIN32
 #include <windows.h>
-#define SLEEP(s) Sleep(s)
+#define SLEEP(s) Sleep((DWORD)s)
 #else
 #include <unistd.h>
 #define SLEEP(s) sleep(s)
 #endif
-#include <time.h>
 #include "lvgl.h"
 #include "sdl/sdl.h"
+
+static int demo_status;
+
+static void demo_release(int signal) {
+    printf("releasing...\n");
+    demo_status = 0;
+}
 
 static void create_ui(void) {
     lv_obj_t *btn = lv_btn_create(lv_scr_act());
@@ -50,7 +58,9 @@ static void driver_init(void) {
 
 int main(void) {
 
-    static unsigned long last_invoked = 0;
+    demo_status = 1;
+    signal(SIGINT, demo_release);
+    signal(SIGTERM, demo_release);
 
     lv_init();
     sdl_init();
@@ -58,8 +68,7 @@ int main(void) {
     driver_init();
     create_ui();
 
-    printf("Begin main loop\n");
-    for (;;) {
+    while(demo_status) {
         // Run LVGL engine
         lv_tick_inc(1);
         lv_timer_handler();
