@@ -10,7 +10,7 @@ jobs:
       with:
           fetch-depth: 0
     - name: Install dependencies
-        run: |
+      run: |
           sudo apt update -qq
           sudo apt install -qq -y build-essential git make autoconf automake libtool \
                pkg-config cmake ninja-build gnome-desktop-testing libasound2-dev libpulse-dev \
@@ -32,7 +32,7 @@ jobs:
       with:
           fetch-depth: 0
     - name: Install dependencies
-        run: |
+      run: |
           brew install \
               pkg-config
     - name: Create build directory and run CMake
