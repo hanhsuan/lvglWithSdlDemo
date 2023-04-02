@@ -1,25 +1,29 @@
 #include <stdio.h>
-#include <unistd.h>
+#include <signal.h>
 #include <time.h>
-#include <sys/time.h>
+#ifdef WIN32
+#include <windows.h>
+#define SLEEP(s) Sleep((DWORD)s)
+#else
+#include <unistd.h>
+#define SLEEP(s) sleep(s)
+#endif
 #include "lvgl.h"
 #include "sdl/sdl.h"
 
-static unsigned long get_millis(void) {
-    unsigned long   now_ms;
-    struct timespec ts;
+static int demo_status;
 
-    clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
-    now_ms = ts.tv_sec * 1000UL + ts.tv_nsec / 1000000UL;
-
-    return now_ms;
+static void demo_release(int signal) {
+    printf("releasing...\n");
+    demo_status = 0;
 }
 
 static void create_ui(void) {
     lv_obj_t *btn = lv_btn_create(lv_scr_act());
     lv_obj_t *lbl = lv_label_create(btn);
+    lv_obj_set_style_text_font(lbl, &lv_font_simsun_16_cjk, 0);
 
-    lv_label_set_text(lbl, "Hello world!");
+    lv_label_set_text(lbl, "Hello world! 歡迎");
 
     lv_obj_center(lbl);
     lv_obj_center(btn);
@@ -55,7 +59,9 @@ static void driver_init(void) {
 
 int main(void) {
 
-    static unsigned long last_invoked = 0;
+    demo_status = 1;
+    signal(SIGINT, demo_release);
+    signal(SIGTERM, demo_release);
 
     lv_init();
     sdl_init();
@@ -63,16 +69,12 @@ int main(void) {
     driver_init();
     create_ui();
 
-    printf("Begin main loop\n");
-    for (;;) {
+    while(demo_status) {
         // Run LVGL engine
-        if (last_invoked > 0) {
-            lv_tick_inc(get_millis() - last_invoked);
-        }
-        last_invoked = get_millis();
+        lv_tick_inc(1);
         lv_timer_handler();
 
-        usleep(1000);
+        SLEEP(0.001);
     }
 
     return 0;
