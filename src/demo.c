@@ -21,8 +21,9 @@ static void demo_release(int signal) {
 static void create_ui(void) {
     lv_obj_t *btn = lv_btn_create(lv_scr_act());
     lv_obj_t *lbl = lv_label_create(btn);
+    lv_obj_set_style_text_font(lbl, &lv_font_simsun_16_cjk, 0);
 
-    lv_label_set_text(lbl, "Hello world!");
+    lv_label_set_text(lbl, "Hello world! 歡迎");
 
     lv_obj_center(lbl);
     lv_obj_center(btn);
