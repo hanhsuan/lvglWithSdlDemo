@@ -6,7 +6,7 @@
 #define SLEEP(s) Sleep((DWORD)s)
 #else
 #include <unistd.h>
-#define SLEEP(s) sleep(s)
+#define SLEEP(s) usleep(s * 1000)
 #endif
 #include "lvgl.h"
 #include "sdl/sdl.h"
@@ -14,7 +14,7 @@
 static int demo_status;
 
 static void demo_release(int signal) {
-    printf("releasing...\n");
+    printf("get singal[%d]\n", signal);
     demo_status = 0;
 }
 
@@ -74,7 +74,7 @@ int main(void) {
         lv_tick_inc(1);
         lv_timer_handler();
 
-        SLEEP(0.001);
+        SLEEP(1);
     }
 
     return 0;
