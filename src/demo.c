@@ -17,11 +17,20 @@ static void demo_release(int signal) {
     demo_status = 0;
 }
 
+static void btn_event_cb(lv_event_t *e){
+    printf("get event:[%d], and user data:[%.10s]\n", e->code, (char *)e->user_data);
+}
+
 static void create_ui(void) {
     lv_obj_t *btn = lv_btn_create(lv_scr_act());
     lv_obj_t *lbl = lv_label_create(btn);
 
     lv_label_set_text(lbl, "Hello world!");
+
+    /* add event to btn, LV_EVENT_ALL will pass all events to callback function. The final argument
+     * will be store in user_data of lv_event_t object as void pointer.
+     * */
+    lv_obj_add_event(btn, btn_event_cb, LV_EVENT_ALL, "test");
 
     lv_obj_center(lbl);
     lv_obj_center(btn);
