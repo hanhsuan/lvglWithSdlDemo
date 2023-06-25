@@ -19,21 +19,34 @@ static void demo_release(int signal) {
 
 static void btn_event_cb(lv_event_t *e){
     printf("get event:[%d], and user data:[%.10s]\n", e->code, (char *)e->user_data);
+    if (memcmp("close", (char *)e->user_data, 5) == 0){
+        demo_status = 0;
+    }
 }
 
 static void create_ui(void) {
     lv_obj_t *btn = lv_btn_create(lv_scr_act());
     lv_obj_t *lbl = lv_label_create(btn);
 
+    lv_obj_t *btn_close = lv_btn_create(lv_scr_act());
+    lv_obj_t *lbl_close = lv_label_create(btn_close);
+
     lv_label_set_text(lbl, "Hello world!");
+    lv_obj_set_style_text_align(lbl, LV_TEXT_ALIGN_CENTER, 0);
+    lv_label_set_text(lbl_close, "Close");
+    lv_obj_set_style_text_align(lbl_close, LV_TEXT_ALIGN_CENTER, 0);
 
     /* add event to btn, LV_EVENT_ALL will pass all events to callback function. The final argument
      * will be store in user_data of lv_event_t object as void pointer.
      * */
     lv_obj_add_event(btn, btn_event_cb, LV_EVENT_ALL, "test");
+    lv_obj_add_event(btn_close, btn_event_cb, LV_EVENT_CLICKED, "close");
 
-    lv_obj_center(lbl);
-    lv_obj_center(btn);
+    lv_obj_align(btn, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_align_to(lbl, btn, LV_ALIGN_BOTTOM_MID, 0, 0);
+
+    lv_obj_align_to(btn_close, btn, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
+    lv_obj_align_to(lbl_close, btn_close, LV_ALIGN_BOTTOM_MID, 0, 0);
 }
 
 int main(void) {
@@ -61,6 +74,12 @@ int main(void) {
 
         SLEEP(1);
     }
+
+    // Release all resources of SDL
+    lv_sdl_quit();
+
+    // Release all resources of lvgl
+    lv_deinit();
 
     return 0;
 }
