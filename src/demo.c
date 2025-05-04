@@ -14,7 +14,7 @@
 static int demo_status;
 
 static void demo_release(int signal) {
-    printf("get singal[%d]\n", signal);
+    printf("got signal[%d]\n", signal);
     demo_status = 0;
 }
 
