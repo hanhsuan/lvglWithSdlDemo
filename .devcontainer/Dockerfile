@@ -9,6 +9,7 @@ RUN apt update && \
     git \
     build-essential \
     g++ \
+    gdb \
     python3.10-venv \
     && rm -rf /var/lib/apt/lists/*
 
